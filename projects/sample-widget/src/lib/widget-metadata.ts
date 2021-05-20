@@ -3,7 +3,7 @@ export const widgetMaterialIcon = 'widgets';
 export const getWidgetTitle = lang => {
   switch (lang) {
     case 'en':
-      return 'Sample Widget';
+      return 'Delphi';
     case 'ja':
       return 'TODO_TITLE';
     case 'fr':
@@ -34,7 +34,7 @@ export const getWidgetTitle = lang => {
 export const getWidgetDescription = lang => {
   switch (lang) {
     case 'en':
-      return 'Created using github.com/UiPath/assistant-plugin-creator';
+      return 'Universal search';
     case 'ja':
       return 'TODO_DESCRIPTION';
     case 'fr':

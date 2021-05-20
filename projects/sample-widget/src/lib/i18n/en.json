@@ -1,5 +1,6 @@
 {
   "SAMPLE_WIDGET": "Sample widget",
+  "DELPHI_TITLE": "Delphi",
   "SAMPLE_WIDGET_ITEM": "Sample widget item",
   "SAMPLE_WIDGET_ITEM_PIN": "Pin item",
   "SAMPLE_WIDGET_ITEM_UNPIN": "Unpin item",
@@ -15,5 +16,7 @@
   "SAMPLE_SIDE_PANEL": "Sample side panel",
   "SAMPLE_SIDE_PANEL_CONTENT": "Sample side-panel content",
   "NO_PROCESSES_FOUND": "No processes found",
+  "NO_RECENT_SEARCHES": "Such empty",
+  "RESULTS_HERE": "Results should come here",
   "SAMPLE_SECOND_COLUMN_CONTENT": "Sample second column content"
 }

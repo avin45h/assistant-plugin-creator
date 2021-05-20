@@ -26,6 +26,8 @@ import { InputDialogComponent } from './input-dialog/input-dialog.component';
 import { ProcessListItemComponent } from './process-list-item/process-list-item.component';
 import { SampleWidgetComponent } from './sample-widget.component';
 import { SidePanelContentComponent } from './side-panel-content/side-panel-content.component';
+import {MatChipsModule} from "@angular/material/chips";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { SidePanelContentComponent } from './side-panel-content/side-panel-conte
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatChipsModule,
+    MatButtonToggleModule,
   ],
   exports: [
     SampleWidgetComponent,
