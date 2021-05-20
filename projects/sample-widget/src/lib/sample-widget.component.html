@@ -12,7 +12,8 @@
       </defs>
     </svg>
     <div class="search-box">
-      <input name="searchText" [(ngModel)]="query" placeholder="try “how do I blah blah”" (keydown.enter)="onKeyDown()"/>
+      <input name="searchText" [(ngModel)]="query" placeholder="try “how do I blah blah”"
+             (keydown.enter)="onKeyDown()"/>
       <div class="clear-icon" (click)="clear()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -25,12 +26,15 @@
   <div class="container">
     <ng-container *ngTemplateOutlet="selectors"></ng-container>
     <ng-container *ngTemplateOutlet="recentsList"></ng-container>
-<!--    <ng-container [ngTemplateOutlet]="searchResults"-->
-<!--                  [ngTemplateOutletContext]="{results: results}"></ng-container>-->
+    <!--    <ng-container [ngTemplateOutlet]="searchResults"-->
+    <!--                  [ngTemplateOutletContext]="{results: results}"></ng-container>-->
   </div>
 </div>
 
 <ng-template #selectors>
+  <div class="search-selectors-title">
+    I'm searching for..
+  </div>
   <div class="search-selectors">
     <mat-button-toggle [checked]="include_forum" (click)="toggle('forum')" value="Forum">
       <div class="label-content">
@@ -124,7 +128,7 @@
 <ng-template #docResult let-result="result">
   <div class="result docs">
     <div class="icon">
-      <ng-container *ngTemplateOutlet="docsIcon"></ng-container>
+      <ng-container *ngTemplateOutlet="docsIconC"></ng-container>
     </div>
     <div class="content">
       <div class="title">
@@ -137,21 +141,16 @@
             {{result.url}}
           </p>
         </div>
-        <div class="tags">
-          <mat-chip-list>
-            <mat-chip *ngFor="let c of result.tags">{{c}}</mat-chip>
-          </mat-chip-list>
-        </div>
       </div>
+      <ng-container *ngTemplateOutlet="viewContainer; context: {link: result.url}"></ng-container>
     </div>
-    <ng-container *ngTemplateOutlet="viewContainer; context: {link: result.url}"></ng-container>
   </div>
 </ng-template>
 
 <ng-template #forumResult let-result="result">
   <div class="result forum">
     <div class="icon">
-      <ng-container *ngTemplateOutlet="forumIcon"></ng-container>
+      <ng-container *ngTemplateOutlet="forumIconC"></ng-container>
     </div>
     <div class="content">
       <div class="title">
@@ -173,6 +172,7 @@
           {{result.ans}}
         </p>
       </div>
+      <ng-container *ngTemplateOutlet="viewContainer; context: {link: result.url}"></ng-container>
     </div>
     <div class="footer">
       <div class="tags">
@@ -180,17 +180,18 @@
         <mat-chip-list>
           <mat-chip>{{result.category}}</mat-chip>
         </mat-chip-list>
+        &nbsp;
+        <span class="timestamp">{{ result.date | date }}</span>
       </div>
-      <div class="timestamp">{{ result.date | date }}</div>
     </div>
-    <ng-container *ngTemplateOutlet="viewContainer; context: {link: result.url}"></ng-container>
+
   </div>
 </ng-template>
 
 <ng-template #marketplaceResult let-result="result">
   <div class="result market-place">
     <div class="icon">
-      <ng-container *ngTemplateOutlet="marketPlaceIcon"></ng-container>
+      <ng-container *ngTemplateOutlet="marketPlaceIconC"></ng-container>
     </div>
     <div class="content">
       <div class="title">
@@ -211,19 +212,15 @@
           </p>
         </div>
         <div class="tags">
+          <div class="small-text">{{result.downloads}} Downloads</div>
           <mat-chip-list>
-            <mat-chip class="color-downloads">{{result.downloads}} Downloads</mat-chip>
             <mat-chip *ngFor="let c of result.tags">{{c}}</mat-chip>
           </mat-chip-list>
         </div>
       </div>
-    </div>
-    <div class="navigate-link" (click)="navigate(result.url)">
-      <button mat-icon-button>
-        <ng-container *ngTemplateOutlet="downloadIcon"></ng-container>
-      </button>
-      <div>
-        Download
+      <div class="navigate-link" (click)="navigate(result.url)">
+          <ng-container *ngTemplateOutlet="downloadIcon"></ng-container>
+          &nbsp; Download
       </div>
     </div>
   </div>
@@ -233,12 +230,8 @@
 <ng-template #viewContainer let-link="link">
 
   <div (click)="navigate(link)" class="navigate-link">
-    <button mat-icon-button>
-      <ng-container *ngTemplateOutlet="viewIcon"></ng-container>
-    </button>
-    <div>
-      View
-    </div>
+    <ng-container *ngTemplateOutlet="viewIcon"></ng-container>
+    &nbsp; View
   </div>
 </ng-template>
 
@@ -281,9 +274,9 @@
 </ng-template>
 
 <ng-template #viewIcon>
-  <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd"
-          d="M3.875 6.45837H27.125V9.04171H3.875V6.45837ZM24.5417 21.9584V19.375H6.45833V21.9584H24.5417ZM27.125 11.625H3.875V14.2084H27.125V11.625ZM3.875 16.7917H27.125V24.5417H3.875V16.7917Z"
+          d="M11.4 0H0.6C0.266667 0 0 0.266667 0 0.6V11.4C0 11.6667 0.266667 12 0.6 12H11.4C11.6667 12 12 11.6667 12 11.4V0.6C12 0.266667 11.6667 0 11.4 0ZM4 2.66667H2.66667V4H4V2.66667ZM9.33333 2.66667H5.33333V4H9.33333V2.66667ZM9.33333 5.33333H5.33333V6.66667H9.33333V5.33333ZM5.33333 8H9.33333V9.33333H5.33333V8ZM2.66667 5.33333H4V6.66667H2.66667V5.33333ZM4 8H2.66667V9.33333H4V8ZM1.33333 10.6667H10.6667V1.33333H1.33333V10.6667Z"
           fill="#526069"/>
   </svg>
 </ng-template>
@@ -306,9 +299,37 @@
 </ng-template>
 
 <ng-template #downloadIcon>
-  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd"
-          d="M12.3333 13.3333H16.3333L10.9999 18.6667L5.66659 13.3333H9.66659V0H12.3333V13.3333ZM0.333252 24V21.3333H21.6666V24H0.333252Z"
+          d="M12.6667 6.33333H10V2.33333H6.00001V6.33333H3.33334L8.00001 11L12.6667 6.33333ZM7.33334 7.66666V3.66666H8.66668V7.66666H9.44668L8.00001 9.11333L6.55334 7.66666H7.33334ZM12.6667 13.6667V12.3333H3.33334V13.6667H12.6667Z"
           fill="#526069"/>
+  </svg>
+</ng-template>
+
+<ng-template #forumIconC>
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="48" height="48" fill="#F4F9FA"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M29 16H16C15.45 16 15 16.45 15 17V31L19 27H29C29.55 27 30 26.55 30 26V17C30 16.45 29.55 16 29 16ZM28 18V25H18.17L17 26.17V18H28ZM32 20H34C34.55 20 35 20.45 35 21V36L31 32H20C19.45 32 19 31.55 19 31V29H32V20Z"
+          fill="#6EB84A"/>
+  </svg>
+</ng-template>
+
+<ng-template #docsIconC>
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="48" height="48" fill="#F4F9FA"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M31.745 15.5L30.245 14L28.745 15.5L27.245 14L25.745 15.5L24.245 14L22.745 15.5L21.245 14L19.745 15.5L18.245 14L16.745 15.5L15.245 14V34L16.745 32.5L18.245 34L19.745 32.5L21.245 34L22.745 32.5L24.245 34L25.745 32.5L27.245 34L28.745 32.5L30.245 34L31.745 32.5L33.245 34V14L31.745 15.5ZM17.245 31.09V16.91H31.245V31.09H17.245ZM30.245 29V27H18.245V29H30.245ZM30.245 23V25H18.245V23H30.245ZM30.245 21V19H18.245V21H30.245Z"
+          fill="#38C6F4"/>
+  </svg>
+</ng-template>
+
+
+<ng-template #marketPlaceIconC>
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="48" height="48" fill="#F4F9FA"/>
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M26.0313 13.5712L24.4601 12L22.8889 13.5712L24.4601 15.1424L26.0313 13.5712ZM33.8134 17.0608L31.7778 20.1142V32H16.2222V20.1142L14.1866 17.0608L16.0356 15.8281L17.928 18.6667H30.0721L31.9644 15.8281L33.8134 17.0608ZM29.5556 20.8889H18.4445V29.7778H29.5556V20.8889ZM21.1267 14.2222L22.6979 15.7934L21.1267 17.3646L19.5556 15.7934L21.1267 14.2222ZM29.3646 15.7934L27.7934 14.2222L26.2222 15.7934L27.7934 17.3646L29.3646 15.7934Z"
+          fill="#8C338B"/>
   </svg>
 </ng-template>
