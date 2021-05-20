@@ -1,40 +1,31 @@
-import { trigger } from '@angular/animations';
+import {trigger} from '@angular/animations';
 import {
-    ChangeDetectionStrategy,
-    Component,
-    Inject,
-    ViewEncapsulation,
+  ChangeDetectionStrategy, ChangeDetectorRef,
+  Component,
+  Inject,
+  ViewEncapsulation,
 } from '@angular/core';
 import {
-    ActionType,
-    CollapseState,
-    collapseVariableHeight,
-    DialogService,
-    IWidgetHomeTabItem,
-    PersistentStore,
-    PersistentStoreFactory,
-    ProcessAction,
-    RobotService,
-    rotate180Animation,
-    rotate360Animation,
-    RotateState,
-    TabLabel,
-    WIDGET_ID,
-    WidgetAppState,
-    WidgetHomeTabService,
+  ActionType,
+  CollapseState,
+  collapseVariableHeight,
+  DialogService,
+  IWidgetHomeTabItem,
+  PersistentStore,
+  PersistentStoreFactory,
+  ProcessAction,
+  RobotService,
+  rotate180Animation,
+  rotate360Animation,
+  RotateState,
+  TabLabel,
+  WIDGET_ID,
+  WidgetAppState,
+  WidgetHomeTabService,
 } from '@uipath/widget.sdk';
 
-import { BehaviorSubject } from 'rxjs';
-import {
-    filter,
-    switchMapTo,
-} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
-import { InputDialogComponent } from './input-dialog/input-dialog.component';
-import { SampleWidgetModule } from './sample-widget.module';
-import { SidePanelContentComponent } from './side-panel-content/side-panel-content.component';
-
-type ProcessIdToAlias = Record<string, string>;
 
 const results = {
   "results": [
@@ -133,7 +124,6 @@ const results = {
   }
 }
 
-
 @Component({
   selector: 'sample-widget',
   templateUrl: './sample-widget.component.html',
@@ -150,63 +140,21 @@ const results = {
 export class SampleWidgetComponent {
   title = 'delphi';
   resultTypes = ["MarketPlace", "Forum", "Docs"]
-  queries = [
-    {id: 1, text: "Randomness is so random"},
-    {id: 2, text: "Randomness is so random and weird"},
-    {id: 3, text: "Randomness is so weird and boring"},
-    {id: 4, text: "Randomness is so boring yet amazing"},
-  ];
+  queries = [];
 
   getType(result: any) {
-    if(!!result.ques) {
+    if (!!result.ques) {
       return "forum";
     }
-    if(!!result.downloads || !!result.certification) {
+    if (!!result.downloads || !!result.certification) {
       return "marketplace";
     }
     return "docs";
   }
 
-  /*results = [
-    {
-      type: "MarketPlace",
-      content: {
-        title: "Document Data Extraction",
-        description: "The robot will run the extraction and dump the contents into an Excel file at a specified location."
-      },
-      certification: "bronze",
-      // tags: ["document", "data", "extraction"],
-      downloads: "123K"
-    },
-    {
-      type: "Forum",
-      content: {
-        title: "Receipt and Invoice AI - Now available in Public Preview! ",
-        description: "This new AI capability gives your UiPath Robots the ability to read both invoices and receipts and will help streamline your automations around accounts payable and expense compliance processes..."
-      },
-      verified: true
-    },
-    {
-      type: "Docs",
-      content: {
-        title: "Data Extraction Overview",
-        description: "Data Extraction is a component in the Document Understanding Framework that helps in identifying very specific information that you are interested in, from your document types..."
-      },
-      link: "https://www.google.com"
-    },
-    {
-      type: "random",
-      content: {
-        title: "Data Extraction Overview"
-      }
-    }
-  ];
-  */
-
-  results = results;
+  results: any;
 
   navigate(link: string) {
-    console.log("Link::", link)
     window.open(link);
   }
 
@@ -217,127 +165,62 @@ export class SampleWidgetComponent {
     return src.split("\n");
   }
 
-  public RotateState = RotateState;
-  public CollapseState = CollapseState;
-  public isCollapsed = false;
-  public processList$ = this.robotService.processList$;
-  public processIdToAlias = new BehaviorSubject<ProcessIdToAlias>({});
-  private store: PersistentStore<ProcessIdToAlias>;
-  private refreshedTimes = 0;
+  public query = "";
+  private host = "http://52.232.104.25:8896/";
+  loaded: boolean = true;
+
+  public include_forum = false;
+  public include_marketplace = false;
+  public include_docs = false;
 
   constructor(
-    private robotService: RobotService,
-    private dialogService: DialogService,
-    private appState: WidgetAppState,
-    private homeTab: WidgetHomeTabService,
     @Inject(WIDGET_ID)
     private widgetId: string,
-    public storageFactory: PersistentStoreFactory,
+    private http: HttpClient,
+    private ref: ChangeDetectorRef
   ) {
-    appState.language$.subscribe(console.log);
-    appState.theme$.subscribe(console.log);
-    this.store = storageFactory.create<ProcessIdToAlias>(this.widgetId);
-    this.refreshProcessAliases();
+  }
 
-    homeTab.setSection({
-      items: [this.getHomeTabItem()],
-      title: this.widgetItemIntl(),
-      onItemClicked: () => this.homeTab.openSidePanel(SidePanelContentComponent, SampleWidgetModule, { isOnHomeTab: true, run: this.runHomeTabItem }),
-      onButtonClicked: this.runHomeTabItem,
-      onMenuItemClicked: item => {
-        homeTab.togglePinToLaunchpad(item);
+  onKeyDown() {
+    this.queries.unshift(this.query);
+    this.onSearch(this.query)
+  }
+
+  clear() {
+    this.query = "";
+    this.loaded = true;
+  }
+
+  toggle(key: string) {
+    switch (key) {
+      case 'docs': this.include_docs = !this.include_docs; break;
+      case 'marketplace': this.include_marketplace = !this.include_marketplace; break;
+      case 'forum': this.include_forum = !this.include_forum; break;
+    }
+  }
+
+  onSearch(query: string) {
+    this.loaded = false;
+    let params = {};
+    if (
+      this.include_marketplace === true ||
+      this.include_forum === true ||
+      this.include_docs === true
+    ) {
+      params = {
+        include_forum: `${this.include_forum}`,
+        include_marketplace: `${this.include_marketplace}`,
+        include_docs: `${this.include_docs}`,
+      };
+    }
+    this.http.get(this.host + query, {
+      params
+    }).subscribe((response) => {
+      if(!this.loaded) {
+        this.loaded = true;
+        this.results = response;
+        this.ref.detectChanges();
       }
     });
-
-    homeTab.pinnedItemIds$
-      .subscribe(() => homeTab.setItems([this.getHomeTabItem()]));
-
-    homeTab.refresh$.subscribe(() => {
-      this.homeTab.setItems([{
-        ...this.getHomeTabItem(),
-        details: appState.translate('REFRESHED_TIMES', { count: ++this.refreshedTimes }),
-      }]);
-    });
-
-    appState.search$.subscribe(() => {
-      homeTab.setSearchResults([{ items: [this.getHomeTabItem()], title: this.widgetItemIntl() }]);
-    });
-  }
-
-  public getHomeTabItem = (): IWidgetHomeTabItem => ({
-    id: '1',
-    title: this.widgetItemIntl(),
-    details: this.appState.translate('REFRESHED_TIMES', { count: this.refreshedTimes }),
-    tooltip: this.widgetItemIntl(),
-    isDraggableToLaunchpad: true,
-    buttonIcon: 'play_circle_outline',
-    menuItems: [{ text: this.getPinTranslation('1') }],
-  });
-
-  public getPinTranslation = (itemId: string) => this.homeTab.getPinnedItemIds().has(itemId)
-    ? this.appState.translate('SAMPLE_WIDGET_ITEM_UNPIN')
-    : this.appState.translate('SAMPLE_WIDGET_ITEM_PIN')
-
-
-  public widgetItemIntl = () => this.appState.translate('SAMPLE_WIDGET_ITEM');
-
-  public runHomeTabItem = () => this.dialogService.alert({
-    type: 'info',
-    message: this.widgetItemIntl(),
-    title: this.widgetItemIntl(),
-  }).afterClosedResult().subscribe();
-
-  public refreshProcessAliases() {
-    this.store.read().subscribe(mapping => this.processIdToAlias.next(mapping || {}));
-  }
-
-  public async rename(processKey: string, currentName: string) {
-    const result = await this.dialogService.custom<string>(InputDialogComponent, currentName, { panelClass: 'input-dialog' })
-      .afterClosedResult()
-      .toPromise();
-    if (!result) {
-      return;
-    }
-
-    this.store.patch({ [processKey]: result })
-      .subscribe(
-        () => this.refreshProcessAliases(),
-      );
-  }
-
-  public async actionHandler({ actionType, processKey, source }: ProcessAction) {
-    switch (actionType) {
-      case ActionType.Start:
-        return await this.robotService.startJob({ processKey }).toPromise();
-      case ActionType.Stop:
-        return await this.dialogService
-          .confirmation({
-            isDestructive: true,
-            message: this.appState.translate('STOP_PROCESS'),
-            title: this.appState.translate('STOP_PROCESS_TITLE'),
-            translateData: source,
-          })
-          .afterClosedResult()
-          .pipe(
-            filter(result => !!result),
-            switchMapTo(this.robotService.stopProcess(processKey)),
-          ).toPromise();
-      case ActionType.Resume:
-        return await this.robotService.resumeProcess(processKey).toPromise();
-      case ActionType.Pause:
-        return await this.robotService.pauseProcess(processKey).toPromise();
-      case ActionType.Install:
-        return await this.robotService.installProcess({ processKey }).toPromise();
-      case ActionType.Edit:
-        return this.appState.openSidePanel(
-          this.widgetId,
-          SidePanelContentComponent,
-          SampleWidgetModule,
-          {
-            isOnHomeTab: false,
-            run: () => this.actionHandler({ actionType: ActionType.Start, processKey, source, trigger: '' }),
-          },
-        );
-    }
   }
 }

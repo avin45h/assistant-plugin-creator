@@ -12,8 +12,8 @@
       </defs>
     </svg>
     <div class="search-box">
-      <input name="searchText" placeholder="try “how do I blah blah”"/>
-      <div class="clear-icon">
+      <input name="searchText" [(ngModel)]="query" placeholder="try “how do I blah blah”" (keydown.enter)="onKeyDown()"/>
+      <div class="clear-icon" (click)="clear()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
@@ -25,24 +25,26 @@
   <div class="container">
     <ng-container *ngTemplateOutlet="selectors"></ng-container>
     <ng-container *ngTemplateOutlet="recentsList"></ng-container>
+<!--    <ng-container [ngTemplateOutlet]="searchResults"-->
+<!--                  [ngTemplateOutletContext]="{results: results}"></ng-container>-->
   </div>
 </div>
 
 <ng-template #selectors>
   <div class="search-selectors">
-    <mat-button-toggle value="Forum">
+    <mat-button-toggle [checked]="include_forum" (click)="toggle('forum')" value="Forum">
       <div class="label-content">
         <ng-container *ngTemplateOutlet="forumIcon"></ng-container>
         Forum
       </div>
     </mat-button-toggle>
-    <mat-button-toggle value="Docs">
+    <mat-button-toggle [checked]="include_docs" (click)="toggle('docs')" value="Docs">
       <div class="label-content">
         <ng-container *ngTemplateOutlet="docsIcon"></ng-container>
         Docs
       </div>
     </mat-button-toggle>
-    <mat-button-toggle value="Marketplace">
+    <mat-button-toggle [checked]="include_marketplace" (click)="toggle('marketplace')" value="Marketplace">
       <div class="label-content">
         <ng-container *ngTemplateOutlet="marketPlaceIcon"></ng-container>
         Marketplace
@@ -56,7 +58,7 @@
   <div class="recents">
     <div class="title">Recent Searches</div>
     <div class="queries">
-      <div class="query" *ngFor="let query of queries;">
+      <div class="query" (click)="query = q; onSearch(q)" *ngFor="let q of queries;">
         <div class="icon">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -65,7 +67,7 @@
           </svg>
         </div>
         <div class="text">
-          {{query.text}}
+          {{q}}
         </div>
       </div>
     </div>
@@ -73,7 +75,14 @@
 </ng-template>
 
 <div class="secondary-container">
-  <div class="results">
+  <div *ngIf="loaded; else spinner">
+    <ng-container [ngTemplateOutlet]="searchResults"
+                  [ngTemplateOutletContext]="{results: results}"></ng-container>
+  </div>
+</div>
+
+<ng-template #searchResults let-results="results">
+  <div class="results" *ngIf="results">
     <div class="qa" *ngIf="results.qa">
       <p class="answer">
         {{results.qa.answer}}
@@ -104,7 +113,13 @@
       </div>
     </ng-container>
   </div>
-</div>
+</ng-template>
+
+<ng-template #spinner let-result="result">
+  <div class="loader">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
 
 <ng-template #docResult let-result="result">
   <div class="result docs">

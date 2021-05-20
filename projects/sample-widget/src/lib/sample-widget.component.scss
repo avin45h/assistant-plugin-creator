@@ -37,11 +37,11 @@ sample-widget {
 
       .answer {
         font-size: 16px;
-        font-weight: normal;
+        font-weight: bold;
       }
 
       .context {
-        font-size: 14px;
+        font-size: 12px;
       }
 
       .source {
@@ -104,6 +104,7 @@ sample-widget {
           mat-chip-list {
             display: inline-block;
           }
+
           .timestamp {
             font-size: 10px;
           }
@@ -149,11 +150,6 @@ sample-widget {
           margin-left: 24px;
           padding-right: 120px;
 
-
-
-
-
-
           .title {
             font-size: 18px;
           }
@@ -171,8 +167,16 @@ sample-widget {
     }
   }
 
+  .loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
   .recents {
     padding: 16px;
+
     .title {
       font-style: normal;
       font-weight: 600;
@@ -190,6 +194,7 @@ sample-widget {
       display: flex;
       height: 48px;
       align-items: center;
+      cursor: pointer;
 
       .text {
         margin-left: 12px;
@@ -224,7 +229,8 @@ sample-widget {
         .clear-icon {
           position: absolute;
           top: 14px;
-          right: 26px
+          right: 26px;
+          cursor: pointer;
         }
 
         input {
@@ -239,7 +245,7 @@ sample-widget {
           font-weight: normal;
           font-size: 16px;
           line-height: 24px;
-          color: rgba(0, 0, 0, 0.25);
+          color: rgba(0, 0, 0, 0.9);
 
           /* or 120% */
           display: flex;

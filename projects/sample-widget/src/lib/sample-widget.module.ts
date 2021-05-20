@@ -28,6 +28,7 @@ import { SampleWidgetComponent } from './sample-widget.component';
 import { SidePanelContentComponent } from './side-panel-content/side-panel-content.component';
 import {MatChipsModule} from "@angular/material/chips";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     MatInputModule,
     MatChipsModule,
     MatButtonToggleModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     SampleWidgetComponent,
