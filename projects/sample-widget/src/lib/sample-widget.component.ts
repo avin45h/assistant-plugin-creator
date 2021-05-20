@@ -213,7 +213,7 @@ export class SampleWidgetComponent {
         include_docs: `${this.include_docs}`,
       };
     }
-    this.http.get(this.host + query, {
+    this.http.get(this.host + '"' + query + '"', {
       params
     }).subscribe((response) => {
       if(!this.loaded) {

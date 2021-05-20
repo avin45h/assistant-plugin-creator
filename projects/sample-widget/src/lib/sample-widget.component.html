@@ -1,18 +1,11 @@
 <div class="main-container">
+  <h2>Delphi - Universal Search</h2>
   <div class="search-panel">
-    <svg width="34" height="32" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg"
-         xmlns:xlink="http://www.w3.org/1999/xlink">
-      <rect width="33.6042" height="32" fill="url(#pattern0)"/>
-      <defs>
-        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
-          <use xlink:href="#image0" transform="translate(0 -0.025066) scale(0.03125 0.0328166)"/>
-        </pattern>
-        <image id="image0" width="32" height="32"
-               xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACPTkDJAAAAY1BMVEUAAAD///+AgIAzMzNAQED/RxwxMTEuLjr/Rx8xMTEuLjIvLy8tMDD8SBf8RxcuMDAtMDAuMDAuLjAuLjD7Rhf7RhcuLzAuLy8tLjD7RxYuLzAtLi/7RhYtLi8tLy8tLi/6RhaWSQUyAAAAH3RSTlMAAQIFDBIVFhkqQlFVWWVqa3CKpb3I1Nnc4+vz8/n7Yvj0ywAAAMpJREFUOMvNk9cOhCAQRbGsay+goCJe/v8rN5aoIPHR7H2bmROmQsg/KciZkFKwPHDHsx67+swR9inAmyQMk4YD1L8BFKrevX6tQG/vQ6XEK7tptVIFK0vQoyZxq7Xe7Bq9WWkO7nutHop4z8KRGwBDQ0o9fA5HA2YAAgnpdHE6EggDkAjJpOPTEULeAEM2sKQwZKdYijRkF7m0aQzebnMd1EW3QW2jPpTOyB6XNWOMntc9gkePBxNxF3E9OTdx1WtE9fxRvtVLP/IH1i4SMn6EXl8AAAAASUVORK5CYII="/>
-      </defs>
+    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M15.465 14.255H16.255L21.245 19.255L19.755 20.745L14.755 15.755V14.965L14.485 14.685C13.345 15.665 11.865 16.255 10.255 16.255C6.665 16.255 3.755 13.345 3.755 9.755C3.755 6.165 6.665 3.255 10.255 3.255C13.845 3.255 16.755 6.165 16.755 9.755C16.755 11.365 16.165 12.845 15.185 13.985L15.465 14.255ZM5.755 9.755C5.755 12.245 7.76501 14.255 10.255 14.255C12.745 14.255 14.755 12.245 14.755 9.755C14.755 7.26501 12.745 5.255 10.255 5.255C7.76501 5.255 5.755 7.26501 5.755 9.755Z" fill="#526069"/>
     </svg>
     <div class="search-box">
-      <input name="searchText" [(ngModel)]="query" placeholder="try “how do I blah blah”"
+      <input name="searchText" [(ngModel)]="query" placeholder="Type here to search"
              (keydown.enter)="onKeyDown()"/>
       <div class="clear-icon" (click)="clear()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -87,7 +80,7 @@
 
 <ng-template #searchResults let-results="results">
   <div class="results" *ngIf="results">
-    <div class="qa" *ngIf="results.qa">
+    <div class="qa" *ngIf="results.qa && (results.qa.confidence > 0.4)">
       <p class="answer">
         {{results.qa.answer}}
       </p>
